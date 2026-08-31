@@ -1,0 +1,89 @@
+theory Generated
+begin
+
+// 1 Starts
+rule Start_submit:
+    [ Fr(~fr) ]
+  --[ Tamalways(~fr), Submit(~fr), Tamstart(~fr) ]->
+    [ State_submit(~fr) ]
+
+// 2. Transitions
+rule automaticcopy_automaticinspection:
+    [ State_automaticcopy(fr) ]
+  --[ Tamalways(fr), Automaticinspection(fr) ]->
+    [ State_automaticinspection(fr) ]
+
+rule automaticcopy_manualissuance:
+    [ State_automaticcopy(fr) ]
+  --[ Tamalways(fr), Manualissuance(fr) ]->
+    [ State_manualissuance(fr) ]
+
+rule automaticinspection_automaticissuance:
+    [ State_automaticinspection(fr) ]
+  --[ Tamalways(fr), Automaticissuance(fr) ]->
+    [ State_automaticissuance(fr) ]
+
+rule automaticissuance_next:
+    [ State_automaticissuance(fr) ]
+  --[ Tamalways(fr), Next(fr) ]->
+    [ State_next(fr) ]
+
+rule automaticregistration_automaticcopy:
+    [ State_automaticregistration(fr) ]
+  --[ Tamalways(fr), Automaticcopy(fr) ]->
+    [ State_automaticcopy(fr) ]
+
+rule manualinspection_automaticcopy:
+    [ State_manualinspection(fr) ]
+  --[ Tamalways(fr), Automaticcopy(fr) ]->
+    [ State_automaticcopy(fr) ]
+
+rule manualinspection_manualissuance:
+    [ State_manualinspection(fr) ]
+  --[ Tamalways(fr), Manualissuance(fr) ]->
+    [ State_manualissuance(fr) ]
+
+rule manualissuance_next:
+    [ State_manualissuance(fr) ]
+  --[ Tamalways(fr), Next(fr) ]->
+    [ State_next(fr) ]
+
+rule submit_automaticregistration:
+    [ State_submit(fr) ]
+  --[ Tamalways(fr), Automaticregistration(fr) ]->
+    [ State_automaticregistration(fr) ]
+
+rule submit_manualinspection:
+    [ State_submit(fr) ]
+  --[ Tamalways(fr), Manualinspection(fr) ]->
+    [ State_manualinspection(fr) ]
+
+// 3. Ends
+rule next_End:
+    [ State_next(fr) ]
+  --[ Tamalways(fr), Tamend(fr) ]->
+    [ ]
+
+// 4 Loop restriction
+// 5. Complete traces
+restriction Force_Trace_Completion:
+  "not (Ex fr #tinit. Tamstart(fr)@#tinit &
+       not (Ex #tend. Tamend(fr)@tend))"
+
+// original: ((!(con_manualissuance))U(con_manualinspection)) || G(!(con_manualissuance))
+// simpnorm: !con_manualissuance W con_manualinspection
+lemma lemma_1:
+  "All fr #t. Tamstart(fr) @t ==> (
+      ((Ex #ttj #ttlast . Tamalways(fr)@ttj & Tamend(fr)@ttlast & ( #t < #ttj & #ttj < #ttlast | #t = #ttj | #ttj = #ttlast) & Manualinspection(fr)@ttj &  (All #ttk . Tamalways(fr)@ttk & (#t < #ttk & #ttk < #ttj | #t = #ttk)  ==> not(Manualissuance(fr)@ttk)) ) | (All #tt. Tamalways(fr)@tt & (#t < #tt | #t = #tt) ==> not(Manualissuance(fr)@tt)))
+  )"
+
+
+// original: ((!(con_automaticissuance))U(con_automaticinspection)) || G(!(con_automaticissuance))
+// simpnorm: !con_automaticissuance W con_automaticinspection
+lemma lemma_2:
+  "All fr #t. Tamstart(fr) @t ==> (
+      ((Ex #ttj #ttlast . Tamalways(fr)@ttj & Tamend(fr)@ttlast & ( #t < #ttj & #ttj < #ttlast | #t = #ttj | #ttj = #ttlast) & Automaticinspection(fr)@ttj &  (All #ttk . Tamalways(fr)@ttk & (#t < #ttk & #ttk < #ttj | #t = #ttk)  ==> not(Automaticissuance(fr)@ttk)) ) | (All #tt. Tamalways(fr)@tt & (#t < #tt | #t = #tt) ==> not(Automaticissuance(fr)@tt)))
+  )"
+
+
+end

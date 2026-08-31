@@ -1,0 +1,44 @@
+{
+  "name": "Declare4Py & PM4Py Development",
+  "image": "mcr.microsoft.com/devcontainers/python:3.10-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/conda:1": {}
+  },
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "postStartCommand": "sudo chmod 666 /var/run/docker.sock",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "James-Yu.latex-workshop"
+      ],
+      "settings": {
+        "latex-workshop.latex.recipes": [
+          {
+            "name": "xelatex",
+            "tools": ["xelatexmk"]
+          }
+        ],
+        "latex-workshop.latex.tools": [
+          {
+            "name": "xelatexmk",
+            "command": "latexmk",
+            "args": [
+              "-synctex=1",
+              "-interaction=nonstopmode",
+              "-file-line-error",
+              "-xelatex",
+              "-outdir=%OUTDIR%",
+              "%DOC%"
+            ],
+            "env": {}
+          }
+        ]
+      }
+    }
+  }
+}
