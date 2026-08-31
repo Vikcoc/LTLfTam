@@ -40,7 +40,7 @@ def translate_unary(formula: _UnaryOp,
     if isinstance(formula, Eventually):
         return f"(Ex #{current_timestep}. {always_action.capitalize()}({fr_name})@{current_timestep} & (#{parent_timestep} < #{current_timestep} | #{parent_timestep} = #{current_timestep}) & {sub_formula_ltl})"
      
-    if isinstance(formula, Next) or isinstance(formula, WeakNext):
+    if isinstance(formula, Next):
         return (
             f"(Ex #{current_timestep} . #{parent_timestep} < #{current_timestep} & {always_action.capitalize()}({fr_name})@{current_timestep} & "
             f"not(Ex #{current_timestep}2 . #{parent_timestep} < #{current_timestep}2 & #{current_timestep}2 < #{current_timestep} & {always_action.capitalize()}({fr_name})@{current_timestep}2) & "
