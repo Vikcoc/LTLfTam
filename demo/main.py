@@ -18,7 +18,7 @@ def main():
     import demodata.ltl_rules as rules
     output_image = "demodata/dfg_image.png"
     output_spthy = "demodata/process_theory.spthy"
-    tamarin_command = ["./tamarin-prover", "--prove", output_spthy]
+    tamarin_command = ["tamarin-prover", "--prove", output_spthy]
 
     draw.make_image(log_path, output_image)
 

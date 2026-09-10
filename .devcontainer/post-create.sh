@@ -10,6 +10,7 @@ sudo apt-get install -y \
   maude \
   graphviz \
   docker.io \
+  curl \
   texlive-latex-recommended \
   texlive-latex-extra \
   texlive-fonts-recommended \
@@ -23,11 +24,40 @@ sudo apt-get install -y \
   fontconfig \
   latexmk
 
-# 3. Install Python packages
+# 3. Download & install Tamarin Prover dynamically from latest GitHub release
+TMP_DIR=$(mktemp -d)
+
+TAMARIN_URL=$(python3 -c "
+import urllib.request, json
+try:
+    req = urllib.request.Request('https://api.github.com/repos/tamarin-prover/tamarin-prover/releases/latest', headers={'User-Agent': 'Mozilla/5.0'})
+    with urllib.request.urlopen(req) as resp:
+        data = json.loads(resp.read().decode())
+        for asset in data.get('assets', []):
+            url = asset.get('browser_download_url', '')
+            if 'linux' in url.lower() and url.endswith('.tar.gz'):
+                print(url)
+                break
+except Exception:
+    pass
+")
+
+if [ -z "$TAMARIN_URL" ]; then
+  TAMARIN_URL="https://github.com/tamarin-prover/tamarin-prover/releases/download/1.8.0/tamarin-prover-1.8.0-linux64-X86_64.tar.gz"
+fi
+
+echo "Downloading Tamarin from: $TAMARIN_URL"
+curl -fsSL "$TAMARIN_URL" -o "$TMP_DIR/tamarin.tar.gz"
+tar -xzf "$TMP_DIR/tamarin.tar.gz" -C "$TMP_DIR"
+sudo mv "$TMP_DIR"/tamarin-prover /usr/local/bin/
+sudo chmod +x /usr/local/bin/tamarin-prover
+rm -rf "$TMP_DIR"
+
+# 4. Install Python packages
 pip install --upgrade pip
 pip install declare4py pm4py
 
-# 4. Pull Lydia Docker image & create wrapper script
+# 5. Pull Lydia Docker image & create wrapper script
 docker pull --platform linux/amd64 whitemech/lydia:latest
 
 sudo tee /usr/local/bin/lydia > /dev/null << 'EOF'
