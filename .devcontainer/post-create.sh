@@ -11,18 +11,10 @@ sudo apt-get install -y \
   graphviz \
   docker.io \
   curl \
-  texlive-latex-recommended \
-  texlive-latex-extra \
-  texlive-fonts-recommended \
-  texlive-xetex \
-  texlive-bibtex-extra \
-  texlive-lang-european \
-  texlive-lang-english \
-  biber \
   fonts-freefont-ttf \
   fonts-liberation \
   fontconfig \
-  latexmk
+  x11-apps
 
 # 3. Download & install Tamarin Prover dynamically from latest GitHub release
 TMP_DIR=$(mktemp -d)
@@ -57,7 +49,8 @@ rm -rf "$TMP_DIR"
 pip install --upgrade pip
 pip install declare4py pm4py
 
-# 5. Pull Lydia Docker image & create wrapper script
+# 5. Ensure Docker socket permissions & pull Lydia Docker image
+sudo chmod 666 /var/run/docker.sock || true
 docker pull --platform linux/amd64 whitemech/lydia:latest
 
 sudo tee /usr/local/bin/lydia > /dev/null << 'EOF'
