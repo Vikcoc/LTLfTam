@@ -35,13 +35,11 @@ rule Approve_End:
     [ ]
 
 // 4 Loop restriction
-restriction Max_2_Inspect:
-  "not (Ex fr #t1 #t2 #t3.
+restriction Max_1_Inspect:
+  "not (Ex fr #t1 #t2.
        Inspect(fr)@#t1 &
        Inspect(fr)@#t2 &
-       Inspect(fr)@#t3 &
-       #t1 < #t2 &
-       #t2 < #t3)"
+       #t1 < #t2)"
 
 // 5. Complete traces
 restriction Force_Trace_Completion:

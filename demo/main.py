@@ -25,7 +25,7 @@ def main():
     ltl_rules = rules.ltl_rules()
     check.run_check(log_path, ltl_rules)
 
-    spthy.build_file(log_path, output_spthy, ltl_rules)
+    spthy.build_file(log_path, output_spthy, ltl_rules, 1)
 
     subprocess.run(tamarin_command, check=True)
 
