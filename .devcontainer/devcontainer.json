@@ -4,7 +4,11 @@
   "features": {
     "ghcr.io/devcontainers/features/conda:1": {}
   },
+  "containerEnv": {
+    "DISPLAY": "${localEnv:DISPLAY}"
+  },
   "mounts": [
+    "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind",
     "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
   ],
   "forwardPorts": [3001],
@@ -15,32 +19,8 @@
       "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",
-        "James-Yu.latex-workshop",
         "tamarin-prover.tamarin-prover"
-      ],
-      "settings": {
-        "latex-workshop.latex.recipes": [
-          {
-            "name": "xelatex",
-            "tools": ["xelatexmk"]
-          }
-        ],
-        "latex-workshop.latex.tools": [
-          {
-            "name": "xelatexmk",
-            "command": "latexmk",
-            "args": [
-              "-synctex=1",
-              "-interaction=nonstopmode",
-              "-file-line-error",
-              "-xelatex",
-              "-outdir=%OUTDIR%",
-              "%DOC%"
-            ],
-            "env": {}
-          }
-        ]
-      }
+      ]
     }
   }
 }
